@@ -1,28 +1,48 @@
 <div class="container">
+    @if ($errors->any())
+    <div class="pt-3">
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $item)
+                <li>{{ $item }}</li>
+                @endforeach
+            </ul>
+        </div>
+    </div>
+
+    @endif
+
+    @if (session()->has('message'))
+    <div class="pt-3">
+        <div class="alert alert-success">
+            {{ session('message') }}
+        </div>
+    </div>
+    @endif
     <!-- START FORM -->
     <div class="my-3 p-3 bg-body rounded shadow-sm">
         <form>
             <div class="mb-3 row">
                 <label for="nama" class="col-sm-2 col-form-label">Nama</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" value="{{ $nama }}">
+                    <input type="text" class="form-control" wire:model="nama">
                 </div>
             </div>
             <div class="mb-3 row">
                 <label for="email" class="col-sm-2 col-form-label">Email</label>
                 <div class="col-sm-10">
-                    <input type="email" class="form-control" value="{{ $email }}">
+                    <input type="email" class="form-control" wire:model="email">
                 </div>
             </div>
             <div class="mb-3 row">
                 <label for="alamat" class="col-sm-2 col-form-label">Alamat</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" value="{{ $alamat }}">
+                    <input type="text" class="form-control" wire:model="alamat">
                 </div>
             </div>
             <div class="mb-3 row">
                 <label class="col-sm-2 col-form-label"></label>
-                <div class="col-sm-10"><button type="button" class="btn btn-primary" name="submit">SIMPAN</button>
+                <div class="col-sm-10"><button type="button" class="btn btn-primary" name="submit" wire:click="store()">SIMPAN</button>
                 </div>
             </div>
         </form>
