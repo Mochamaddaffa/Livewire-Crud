@@ -5,12 +5,18 @@ namespace App\Livewire;
 use App\Models\Employee as ModelsEmployee;
 use Doctrine\Inflector\Rules\English\Rules;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class Employee extends Component
 {
+    use WithPagination;
+    protected $paginationTheme = 'bootstrap';
     public $nama;
     public $email;
     public $alamat;
+    public $updateData = false;
+    public $employee_id;
+
 
     public function store()
     {
@@ -28,9 +34,52 @@ class Employee extends Component
         $validated = $this->validate($rules, $pesan);
         ModelsEmployee::create($validated);
         session()->flash('message', 'Data berhasil dimasukkan');
+        $this->clear();
+    }
+    public function edit($id){
+       $data = ModelsEmployee::find($id);
+       $this->nama = $data->nama;
+       $this->email = $data->email;
+       $this->alamat = $data->alamat;
+
+       $this->updateData = true;
+       $this->employee_id = $id;
+    }
+    public function update()
+    {
+        $rules = [
+            'nama' => 'required',
+            'email' => 'required|email',
+            'alamat' => 'required',
+        ];
+        $pesan = [
+            'nama.required' => 'Nama harus diisi',
+            'email.required' => 'Email harus diisi',
+            'email.email' => 'Format email tidak sesuai',
+            'alamat.required' => 'Alamat harus diisi',
+        ];
+        $validated = $this->validate($rules, $pesan);
+         $data = ModelsEmployee::find($this->employee_id);
+         $data->update($validated);
+        session()->flash('message', 'Data berhasil diupdate');
+
+        $this->clear();
+    }
+
+    public function clear()
+    {
+        $this->nama='';
+        $this->email='';
+        $this->alamat='';
+
+        $this->updateData = false;
+       $this->employee_id = '';
+
+        
     }
     public function render()
     {
-        return view('livewire.employee');
+        $data = ModelsEmployee::orderBy('nama','asc')->paginate(3);
+        return view('livewire.employee',['dataEmployees'=>$data]);
     }
 }
