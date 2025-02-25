@@ -46,7 +46,7 @@
                 <div class="col-sm-10"><button type="button" class="btn btn-primary" name="submit" wire:click="store()">SIMPAN</button>
                 </div>
                 @else
-                <div class="col-sm-10"><button type="button" class="btn btn-primary" name="submit" wire:click="update()">UPDATE</button>
+                <div class="col-sm-10"><button type="button" class="btn btn-info" name="submit" wire:click="update()">UPDATE</button>
                 </div>
                 @endif
                 <div class="col-sm-10"><button type="button" class="btn btn-secondary" name="submit" wire:click="clear()">CLEAR</button>
