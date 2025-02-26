@@ -17,6 +17,9 @@ class Employee extends Component
     public $updateData = false;
     public $employee_id;
     public $katakunci;
+    public $employee_selected_id = [];
+    public $sortColumn = 'nama';
+    public $sortDirection = 'asc';
 
 
     public function store()
@@ -74,29 +77,48 @@ class Employee extends Component
         $this->alamat='';
 
         $this->updateData = false;
-       $this->employee_id = '';
+        $this->employee_id = '';
+        $this->employee_selected_id = [];
     }
 
     public function delete(){
         $id = $this->employee_id;
         ModelsEmployee::find($id)->delete();
+        if(count($this->employee_selected_id)) {
+            for($x=0;$x < count($this->employee_selected_id);$x++){
+                ModelsEmployee::find($this->employee_selected_id[$x])->delete();
+            }
+
+        }
         session()->flash('message', 'Data berhasil di-delete');
         $this->clear();
     }
 
     public function delete_confirmation($id)
     {
-        $this->employee_id = $id;
+        if($this->employee_id !=''){
+
+        }
+        if($id !=''){
+            $this->employee_id = $id;
+        }
     }
+
+    public function sort ($columnName)
+    {
+        $this->sortColumn = $columnName;
+        $this->sortDirection = $this->sortDirection = 'asc' ? 'desc' : 'asc';
+    }   
+
     public function render()
     {
         if($this->katakunci != null){
             $data = ModelsEmployee::where('nama', 'like', '%'.$this->katakunci.'%')
             ->orWhere('email', 'like', '%'.$this->katakunci.'%')
             ->orWhere('alamat', 'like', '%'.$this->katakunci.'%')
-            ->orderBy('nama','asc')->paginate(3);
+            ->orderBy($this->sortColumn,$this->sortDirection)->paginate(3);
         }else{
-            $data = ModelsEmployee::orderBy('nama','asc')->paginate(3);
+            $data = ModelsEmployee::orderBy($this->sortColumn,$this->sortDirection)->paginate(3);
         }
         
         return view('livewire.employee',['dataEmployees'=>$data]);
